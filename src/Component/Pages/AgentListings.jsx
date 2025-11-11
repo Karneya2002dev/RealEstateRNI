@@ -26,7 +26,7 @@ const AgentListings = () => {
       url: "https://realestatesnetworkindiapvtltd.com/projects/keerthi-raja-palace/",
     },
     {
-      name: "Divya Promoters",
+      name: "SD Promoters",
       company: "Divya Nagar",
       listings: 145,
       image: agent3,
