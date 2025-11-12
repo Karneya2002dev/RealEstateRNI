@@ -4,6 +4,7 @@ import { useInView } from "react-intersection-observer";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroImage from "../../assets/hero-buildings.jpg";
+import Locations from "./Locations";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -132,6 +133,7 @@ const Hero = () => {
           ></path>
         </svg>
       </motion.div>
+     
     </section>
   );
 };
