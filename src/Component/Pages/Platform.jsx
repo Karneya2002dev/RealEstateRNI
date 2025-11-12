@@ -10,29 +10,33 @@ const Platforms = () => {
   const cardsRef = useRef([]);
   const headerRef = useRef(null);
 
-  const platforms = [
-    {
-      name: "RedBriq",
-      url: "https://app.redbriq.com/login",
-      description:
-        "Innovative real estate solutions and smart investment opportunities designed to elevate your property experience.",
-      color: "from-red-500 to-red-700",
-    },
-    {
-      name: "Blindersoe",
-      url: "https://realestatesnetworkindiapvtltd.com/blindersoe-panel/login",
-      description:
-        "Streamlined property management and maintenance platform delivering trust, transparency, and performance.",
-      color: "from-blue-500 to-blue-700",
-    },
-    {
-      name: "FunnelWorkz",
-      url: "https://app.funnelworkz.com/",
-      description:
-        "Powerful marketing automation and lead generation solutions built for real estate professionals.",
-      color: "from-purple-500 to-purple-700",
-    },
-  ];
+ const platforms = [
+  {
+    name: "MicroSite Pro",
+    feature: "Create Microsite",
+    url: "https://micro-site-two.vercel.app/",
+    description:
+      "Create stunning real estate microsites instantly to showcase properties with modern design and detail.",
+    color: "from-red-500 to-red-700",
+  },
+  {
+    name: "Digital View",
+    feature: "Digital View of the Property",
+    url: "https://realestatesnetworkindiapvtltd.com/blindersoe-panel/login",
+    description:
+      "Experience a digital tour and detailed property visualization to enhance decision-making and client engagement.",
+    color: "from-blue-500 to-blue-700",
+  },
+  {
+    name: "Propety Manager",
+    feature: "Property Management",
+    url: "https://app.funnelworkz.com/",
+    description:
+      "Manage property listings, leads, and workflows with an efficient real-estate management dashboard.",
+    color: "from-purple-500 to-purple-700",
+  },
+];
+
 
   useEffect(() => {
     const ctx = gsap.context(() => {
