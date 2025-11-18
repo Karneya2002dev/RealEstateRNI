@@ -4,23 +4,40 @@ import { useNavigate } from "react-router-dom";
 import { UserPlus } from "lucide-react";
 import logo from "../../assets/logoo.png";
 
-const Register = () => {
+const RegisterForm = ({ role }) => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", company: "" });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    alert("Registration successful!");
-    navigate("/login");
-  };
+ const handleRegister = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch("http://localhost:5000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, role }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(`${role} registration successful!`);
+      navigate("/login");
+    } else {
+      alert(data.message);
+    }
+  } catch (err) {
+    alert("Server error");
+  }
+};
+
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4" >
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 px-4">
       <motion.div
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -29,7 +46,7 @@ const Register = () => {
       >
         <div className="flex flex-col items-center mb-6">
           <img src={logo} alt="Logo" className="h-14 mb-3" />
-          <h2 className="text-2xl font-bold text-gray-800">Create Account</h2>
+          <h2 className="text-2xl font-bold text-gray-800">Create {role} Account</h2>
           <p className="text-gray-500 text-sm">Join us to explore more</p>
         </div>
 
@@ -70,6 +87,21 @@ const Register = () => {
             />
           </div>
 
+          {/* Optional field for Builders */}
+          {role === "Builder" && (
+            <div>
+              <label className="text-sm font-semibold text-gray-700">Company Name</label>
+              <input
+                type="text"
+                name="company"
+                value={form.company}
+                onChange={handleChange}
+                className="w-full mt-1 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                required
+              />
+            </div>
+          )}
+
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -94,4 +126,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterForm;
