@@ -3,7 +3,7 @@ import Header from './Pages/Header'
 import Hero from './Pages/Hero'
 import About from './Pages/About'
 import Services from './Pages/Service'
-import Platforms from './Pages/Platform'
+// import Platforms from './Pages/Platform'
 import Gallery from './Pages/Gallery'
 import Testimonials from './Pages/Testimonal'
 import FAQ from './Pages/FAQ'
@@ -18,7 +18,7 @@ const Home = () => {
     <OurLocations />
     <About />
     <Services />
-    <Platforms />
+    {/* <Platforms /> */}
     <Gallery />
     <Testimonials />
     <AgentListings />
