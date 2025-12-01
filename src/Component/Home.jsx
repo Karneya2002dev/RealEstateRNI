@@ -10,12 +10,16 @@ import FAQ from './Pages/FAQ'
 import Footer from './Pages/Footer'
 import AgentListings from './Pages/AgentListings'
 import OurLocations from './Pages/Locations'
+import PropertySearchBanner from './Pages/PropertySearchBanner'
 
 const Home = () => {
   return (
     <>
+    
     <Hero />
+ 
     <OurLocations />
+       <PropertySearchBanner />
     <About />
     <Services />
     {/* <Platforms /> */}

@@ -33,14 +33,14 @@ export default function PropertyPage() {
       title: "Premium 3BHK Flat",
       price: "₹75,00,000",
       location: "Velachery, Chennai",
-      img: "https://via.placeholder.com/350x200",
+      img: "https://www.realestateschennai.co.in/Sep-A2Z-3%20-2-.png",
     },
     {
       id: 3,
       title: "Budget 1BHK Flat",
       price: "₹32,50,000",
       location: "Tambaram, Chennai",
-      img: "https://via.placeholder.com/350x200",
+      img: "https://www.realestateschennai.co.in/Sep-A2Z-3%20-2-.png",
     },
   ]);
 
