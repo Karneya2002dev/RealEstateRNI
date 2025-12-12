@@ -1,380 +1,340 @@
-// import { useState, useEffect } from "react";
-// import { Menu, X, LogIn, LogOut, ChevronDown, Home, Building2, Landmark, Warehouse } from "lucide-react";
-// import { useNavigate } from "react-router-dom";
-// import { motion, AnimatePresence } from "framer-motion";
-// import logo from "../../assets/logoo.png";
+import { useState, useEffect } from "react";
+import {
+  Menu, X, LogIn, LogOut, ChevronDown,
+  Home, Building2, Landmark, Warehouse, Rocket, Star
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import logo from "../../assets/logoo.png";
 
-// /* Property Items with Icons */
-// const propertyItems = [
-//   { label: "NEW FLATS", icon: <Home size={16} />, path: "new-flats" },
-//   { label: "OLD USED FLATS", icon: <Building2 size={16} />, path: "old-flats" },
-//   { label: "PLOT - Residential", icon: <Landmark size={16} />, path: "plot-residential" },
-//   { label: "PLOT - Commercial", icon: <Landmark size={16} />, path: "plot-commercial" },
-//   { label: "RESIDENTIAL - NEW VILLAS", icon: <Home size={16} />, path: "new-villas" },
-//   { label: "Residential - Old BUILDING", icon: <Warehouse size={16} />, path: "old-buildings" },
-//   { label: "Joint Venture", icon: <Warehouse size={16} />, path: "joint-venture" },
-//   { label: "OLD VILLAS", icon: <Home size={16} />, path: "old-villas" },
-//   { label: "Rental / LEASE", icon: <Building2 size={16} />, path: "rental-lease" },
-// ];
+/* Property Items with Icons */
+const propertyItems = [
+  { label: "New Flats", icon: <Home size={16} />, path: "new-flats" },
+  { label: "Old Used Flats", icon: <Building2 size={16} />, path: "old-flats" },
+  { label: "Residential Plots", icon: <Landmark size={16} />, path: "plot-residential" },
+  { label: "Commercial Plots", icon: <Landmark size={16} />, path: "plot-commercial" },
+  { label: "New Villas", icon: <Home size={16} />, path: "new-villas" },
+  { label: "Old Buildings", icon: <Warehouse size={16} />, path: "old-buildings" },
+  { label: "Joint Venture", icon: <Rocket size={16} />, path: "joint-venture" },
+  { label: "Old Villas", icon: <Home size={16} />, path: "old-villas" },
+  { label: "Rental / Lease", icon: <Building2 size={16} />, path: "rental-lease" },
+];
 
-// const navLinks = [
-//   { name: "About Us", href: "#about" },
-//   { name: "Services", href: "#services" },
-//   { name: "Gallery", href: "#gallery" },
-//   { name: "Forum", href: "#forum" },
-//   { name: "YouTube", href: "#youtube" },
-//   { name: "FAQ", href: "#faq" },
-//   { name: "Contact Us", href: "#contact" },
-// ];
+/* Add Investors Link Here */
+const navLinks = [
+  { name: "About Us", href: "#about" },
+  { name: "Services", href: "#services" },
+  { name: "Gallery", href: "#gallery" },
+  { name: "Forum", href: "#forum" },
+  { name: "YouTube", href: "#youtube" },
+  { name: "FAQ", href: "#faq" },
+  { name: "Contact Us", href: "#contact" },
+  { name: "Investors", href: "https://invest.rnirealestate.com/", external: true },
+];
 
-// export default function Header() {
-//   const [isScrolled, setIsScrolled] = useState(false);
-//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-//   const [propertyOpen, setPropertyOpen] = useState(false);
-//   const [user, setUser] = useState(null);
-//   const [showWelcome, setShowWelcome] = useState(false);
+const LinkPill = () => (
+  <span className="absolute inset-0 rounded-full scale-x-0 bg-amber-500/10 group-hover:scale-x-100 transition-transform duration-300"></span>
+);
 
-//   const navigate = useNavigate();
+export default function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [propertyOpen, setPropertyOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [showWelcome, setShowWelcome] = useState(false);
 
-//   useEffect(() => {
-//     const handleScroll = () => setIsScrolled(window.scrollY > 60);
-//     window.addEventListener("scroll", handleScroll);
-//     return () => window.removeEventListener("scroll", handleScroll);
-//   }, []);
+  const [isScrolled, setIsScrolled] = useState(false); // 👈 NEW
 
-//   useEffect(() => {
-//     const storedUser = localStorage.getItem("user");
-//     if (storedUser) {
-//       const parsedUser = JSON.parse(storedUser);
-//       setUser(parsedUser);
+  const navigate = useNavigate();
 
-//       setShowWelcome(true);
-//       setTimeout(() => setShowWelcome(false), 3000);
-//     }
-//   }, []);
+  useEffect(() => {
+    // Scroll Listener
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
 
-//   const handleLogout = () => {
-//     localStorage.removeItem("user");
-//     setUser(null);
-//     navigate("/login");
-//   };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-//   const handlePropertyClick = (path) => {
-//     navigate(`/properties/${path}`);
-//     setPropertyOpen(false);
-//     setIsMobileMenuOpen(false);
-//   };
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
 
-//   return (
-//     <>
-//       {/* 🎉 Floating Welcome Notification */}
-//       <AnimatePresence>
-//         {showWelcome && user && (
-//           <motion.div
-//             initial={{ opacity: 0, y: -30, scale: 0.9 }}
-//             animate={{ opacity: 1, y: 0, scale: 1 }}
-//             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-//             transition={{ duration: 0.4 }}
-//             className="fixed top-5 right-5 bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-3 rounded-xl shadow-2xl z-[999]"
-//           >
-//             Welcome back, <span className="font-bold">{user.name.split(" ")[0]}</span> 🎉
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
+      setShowWelcome(true);
+      setTimeout(() => setShowWelcome(false), 3000);
+    }
+  }, []);
 
-//       {/* NAVBAR */}
-//       <motion.header
-//         initial={{ y: -50, opacity: 0 }}
-//         animate={{ y: 0, opacity: 1 }}
-//         className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-//           isScrolled
-//             ? "bg-white shadow-xl border-b border-gray-200"
-//             : "bg-white/30 backdrop-blur-lg border-b border-white/40"
-//         }`}
-//       >
-//         <nav className="container mx-auto px-4 sm:px-6 lg:px-10 py-3">
-//           <div className="flex items-center justify-between">
-            
-//             {/* Logo */}
-//             <motion.a
-//               href="/"
-//               initial={{ opacity: 0, x: -40 }}
-//               animate={{ opacity: 1, x: 0 }}
-//               className="flex items-center gap-2"
-//             >
-//               <motion.img
-//                 whileHover={{ scale: 1.1, rotate: 4 }}
-//                 src={logo}
-//                 alt="Logo"
-//                 className="h-14 w-auto"
-//               />
-//             </motion.a>
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login");
+    setIsMobileMenuOpen(false);
+  };
 
-//             {/* DESKTOP NAV */}
-//             <div className="hidden lg:flex items-center gap-8">
+  const handlePropertyClick = (path) => {
+    navigate(`/properties/${path}`);
+    setPropertyOpen(false);
+    setIsMobileMenuOpen(false);
+  };
 
-//               {/* Properties Dropdown */}
-//               <div
-//                 className="relative"
-//                 onMouseEnter={() => setPropertyOpen(true)}
-//                 onMouseLeave={() => setPropertyOpen(false)}
-//               >
-//                 <button className="flex items-center gap-1 font-semibold text-gray-800 hover:text-blue-600 transition">
-//                   Properties <ChevronDown className="h-4 w-4" />
-//                 </button>
-
-//                 <AnimatePresence>
-//                   {propertyOpen && (
-//                     <motion.div
-//                       initial={{ opacity: 0, y: 15, scale: 0.95 }}
-//                       animate={{ opacity: 1, y: 0, scale: 1 }}
-//                       exit={{ opacity: 0, y: 15, scale: 0.95 }}
-//                       transition={{ duration: 0.25, ease: "easeOut" }}
-//                       className="
-//                         absolute left-0 mt-4 w-[340px] 
-//                         rounded-2xl shadow-2xl overflow-hidden
-//                         backdrop-blur-xl bg-white/80 border border-white/30
-//                       "
-//                     >
-//                       <div className="px-5 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold text-lg">
-//                         Explore Properties
-//                       </div>
-
-//                       <div className="grid grid-cols-1 divide-y divide-gray-200">
-//                         {propertyItems.map((item, i) => (
-//                           <motion.button
-//                             key={item.label}
-//                             initial={{ opacity: 0, x: -10 }}
-//                             animate={{ opacity: 1, x: 0 }}
-//                             transition={{ delay: i * 0.05 }}
-//                             onClick={() => handlePropertyClick(item.path)}
-//                             className="
-//                               w-full flex items-center gap-4
-//                               px-5 py-3 text-left 
-//                               hover:bg-blue-50/70 hover:text-blue-700 
-//                               transition-all group
-//                             "
-//                           >
-//                             <div
-//                               className="
-//                                 h-10 w-10 flex items-center justify-center 
-//                                 rounded-xl bg-blue-100 text-blue-700 
-//                                 group-hover:bg-blue-600 group-hover:text-white 
-//                                 transition
-//                               "
-//                             >
-//                               {item.icon}
-//                             </div>
-//                             <span className="text-gray-800 font-medium group-hover:font-semibold">
-//                               {item.label}
-//                             </span>
-//                           </motion.button>
-//                         ))}
-//                       </div>
-//                     </motion.div>
-//                   )}
-//                 </AnimatePresence>
-//               </div>
-
-//               {/* Normal Links */}
-//               {navLinks.map((link, i) => (
-//                 <motion.a
-//                   key={link.name}
-//                   href={link.href}
-//                   className="relative font-medium text-gray-900 group"
-//                   initial={{ opacity: 0, y: -10 }}
-//                   animate={{ opacity: 1, y: 0 }}
-//                   transition={{ delay: i * 0.08 }}
-//                 >
-//                   {link.name}
-//                   <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-blue-600 group-hover:w-full transition-all"></span>
-//                 </motion.a>
-//               ))}
-
-//               {/* Auth Section */}
-//               {user ? (
-//                 <button
-//                   onClick={handleLogout}
-//                   className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-5 py-2 rounded-full shadow-md hover:shadow-blue-300 flex items-center gap-2"
-//                 >
-//                   <LogOut size={18} /> Logout
-//                 </button>
-//               ) : (
-//                 <button
-//                   onClick={() => navigate("/login")}
-//                   className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-5 py-2 rounded-full shadow-md hover:shadow-blue-300 flex items-center gap-2"
-//                 >
-//                   <LogIn size={18} /> Login
-//                 </button>
-//               )}
-//             </div>
-
-//             {/* MOBILE MENU BUTTON */}
-//             <button
-//               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-//               className="lg:hidden"
-//             >
-//               {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-//             </button>
-//           </div>
-//         </nav>
-
-//         {/* MOBILE SLIDE MENU */}
-//         <AnimatePresence>
-//           {isMobileMenuOpen && (
-//             <motion.div
-//               initial={{ x: 300 }}
-//               animate={{ x: 0 }}
-//               exit={{ x: 300 }}
-//               transition={{ type: "spring", stiffness: 90 }}
-//               className="lg:hidden bg-white shadow-xl border-t px-6 py-4 space-y-3"
-//             >
-//               <p className="font-semibold text-gray-900">Properties</p>
-//               {propertyItems.map((item) => (
-//                 <button
-//                   key={item.label}
-//                   onClick={() => handlePropertyClick(item.path)}
-//                   className="w-full flex items-center gap-3 py-2 text-gray-700 hover:bg-gray-100 px-2 rounded"
-//                 >
-//                   {item.icon}
-//                   {item.label}
-//                 </button>
-//               ))}
-
-//               <hr className="my-3" />
-
-//               {navLinks.map((link) => (
-//                 <a key={link.name} href={link.href} className="block py-2 font-medium">
-//                   {link.name}
-//                 </a>
-//               ))}
-
-//               <hr className="my-3" />
-
-//               {user ? (
-//                 <button
-//                   onClick={handleLogout}
-//                   className="w-full bg-blue-600 text-white py-2 rounded-full flex items-center justify-center gap-2"
-//                 >
-//                   <LogOut size={18} /> Logout
-//                 </button>
-//               ) : (
-//                 <button
-//                   onClick={() => navigate("/login")}
-//                   className="w-full bg-blue-600 text-white py-2 rounded-full flex items-center justify-center gap-2"
-//                 >
-//                   <LogIn size={18} /> Login
-//                 </button>
-//               )}
-//             </motion.div>
-//           )}
-//         </AnimatePresence>
-//       </motion.header>
-//     </>
-//   );
-// }
-
-import { useState } from "react";
-import { ChevronDown, Menu } from "lucide-react";
-
-const Header = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const navItems = [
-    { label: "For Buyers", hasDropdown: true },
-    { label: "For Tenants", hasDropdown: true },
-    { label: "For Sellers", hasDropdown: true },
-    { label: "Services", hasDropdown: true },
-    { label: "News & Guide", hasDropdown: true },
-  ];
+  // 👇 When scrolled text color changes
+  const navTextColor = isScrolled ? "text-gray-800" : "text-gray-100";
+  const iconColor = isScrolled ? "text-black" : "text-white";
 
   return (
-    <header className="bg-gradient-to-r from-hero-start via-hero-mid to-hero-end">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <>
+      <AnimatePresence>
+        {showWelcome && user && (
+          <motion.div
+            initial={{ opacity: 0, y: -30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            transition={{ duration: 0.4 }}
+            className="fixed top-5 right-5 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-3 rounded-xl shadow-2xl z-[999]"
+          >
+            Welcome back,{" "}
+            <span className="font-bold">{user.name.split(" ")[0]}</span>{" "}
+            <Star size={18} className="inline-block" />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="bg-accent w-8 h-8 flex items-center justify-center rounded">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 text-black fill-current">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-              </svg>
-            </div>
-            <span className="text-black font-bold text-xl">HOUSING.com</span>
-          </div>
+      {/* NAVBAR */}
+      <motion.header
+        initial={{ y: -40 }}
+        animate={{ y: isScrolled ? 5 : 0 }} // 👈 Moves slightly down on scroll
+        className={`fixed top-0 w-full z-50 transition-all duration-300 
+          ${isScrolled
+            ? "bg-white backdrop-blur-lg shadow-lg border-b border-gray-200"
+            : "bg-transparent backdrop-blur-none"
+          }`}
+      >
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-10 py-3">
+          <div className="flex items-center justify-between">
 
-          {/* Desktop Menu */}
-          <nav className="hidden lg:flex items-center gap-6">
-            {navItems.map((item) => (
-              <div className="relative group" key={item.label}>
-                <button className="text-black flex items-center gap-1 hover:opacity-80 text-sm font-medium">
-                  {item.label}
-                  {item.hasDropdown && <ChevronDown className="h-4 w-4" />}
+            {/* LOGO */}
+            <motion.a href="/" className="flex items-center gap-2">
+              <motion.img
+                src={logo}
+                alt="Logo"
+                className={`h-14 transition-all ${isScrolled ? "invert-0" : "invert"}`}
+                whileHover={{ scale: 1.1, rotate: 4 }}
+              />
+            </motion.a>
+
+            {/* Desktop */}
+            <div className="hidden lg:flex items-center gap-6">
+
+              {/* Properties Dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setPropertyOpen(true)}
+                onMouseLeave={() => setPropertyOpen(false)}
+              >
+                <button
+                  className={`flex items-center gap-1 font-semibold py-2 px-3 rounded-full transition
+                    ${propertyOpen
+                      ? "bg-amber-600 text-gray-900"
+                      : isScrolled
+                        ? "text-gray-800 hover:bg-amber-600 hover:text-gray-900"
+                        : "text-white hover:bg-amber-600 hover:text-gray-900"} `}
+                >
+                  Properties
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${iconColor}`}
+                    style={{ transform: propertyOpen ? "rotate(180deg)" : "" }}
+                  />
                 </button>
 
-                {/* Dropdown */}
-                {item.hasDropdown && (
-                  <div className="absolute hidden group-hover:block bg-white text-black shadow-md rounded-md p-2 w-40 mt-2">
-                    <div className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer">
-                      Option 1
-                    </div>
-                    <div className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer">
-                      Option 2
-                    </div>
-                    <div className="px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer">
-                      Option 3
-                    </div>
-                  </div>
-                )}
+                {/* DROPDOWN */}
+                <AnimatePresence>
+                  {propertyOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 15 }}
+                      className="absolute left-0 mt-4 w-[340px] rounded-2xl bg-gray-800 text-white border border-gray-700 shadow-xl overflow-hidden"
+                    >
+                      <div className="px-5 py-3 bg-gray-900 text-amber-500 font-bold text-lg border-b border-amber-500/20">
+                        Explore Real Estate
+                      </div>
+                      <div className="grid grid-cols-1 divide-y divide-gray-700 p-2">
+                        {propertyItems.map((item, i) => (
+                          <motion.button
+                            key={item.label}
+                            transition={{ delay: i * 0.03 }}
+                            onClick={() => handlePropertyClick(item.path)}
+                            className="w-full flex items-center gap-4 px-3 py-3 hover:bg-gray-700 hover:text-amber-300 transition"
+                          >
+                            <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-gray-900 text-amber-500">
+                              {item.icon}
+                            </div>
+                            <span className="font-medium">{item.label}</span>
+                          </motion.button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            ))}
-          </nav>
 
-          {/* Right Side */}
-          <div className="flex items-center gap-3">
+              {/* Desktop Links */}
+              {navLinks.map((link) =>
+                link.external ? (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`relative font-medium group px-3 py-2 rounded-full ${navTextColor}`}
+                  >
+                    <LinkPill />
+                    <span className="relative z-10 font-bold">{link.name}</span>
+                  </motion.a>
+                ) : (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    className={`relative font-medium group px-3 py-2 rounded-full ${navTextColor}`}
+                  >
+                    <LinkPill />
+                    <span className="relative z-10">{link.name}</span>
+                  </motion.a>
+                )
+              )}
 
-            {/* Download App */}
-            <button className="hidden lg:inline-flex text-black text-sm hover:bg-white/10 px-3 py-1 rounded">
-              Download App
-            </button>
-
-            {/* Post Property */}
-            <button className="relative bg-accent px-4 py-2 rounded text-black font-semibold hover:bg-accent/90">
-              Post Property
-              <span className="absolute -top-2 -right-2 bg-red-500 text-black text-xs px-2 py-0.5 rounded">
-                FREE
-              </span>
-            </button>
+              {/* Login / Logout */}
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className={`px-5 py-2 rounded-full flex gap-2 font-semibold
+                    ${isScrolled ? "bg-red-600 text-white" : "bg-red-700 text-white"}`}
+                >
+                  <LogOut size={18} /> Logout
+                </button>
+              ) : (
+                <button
+                  onClick={() => navigate("/login")}
+                  className={`px-5 py-2 rounded-full flex gap-2 font-bold
+                    ${isScrolled
+                      ? "bg-amber-500 text-gray-900"
+                      : "bg-gradient-to-r from-amber-500 to-orange-600 text-gray-900"
+                    }`}
+                >
+                  <LogIn size={18} /> Login
+                </button>
+              )}
+            </div>
 
             {/* Mobile Menu Icon */}
             <button
-              className="text-black hover:bg-white/10 p-2 rounded lg:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`${iconColor} lg:hidden p-2`}
             >
-              <Menu className="h-6 w-6" />
+              {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
-        </div>
+        </nav>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-white/20">
-            <nav className="flex flex-col gap-3">
-              {navItems.map((item) => (
-                <button
-                  key={item.label}
-                  className="text-black text-left py-2 hover:opacity-80"
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-          </div>
+      {/* Mobile Menu */}
+<AnimatePresence>
+  {isMobileMenuOpen && (
+    <motion.div
+      initial={{ x: "100%" }}
+      animate={{ x: 0 }}
+      exit={{ x: "100%" }}
+      className="lg:hidden fixed top-0 right-0 h-screen w-4/5 max-w-xs bg-gray-900 z-[9999] shadow-2xl flex flex-col"
+    >
+      {/* Header inside menu */}
+      <div className="flex items-center justify-between px-6 py-5 border-b border-gray-700">
+        <img src={logo} alt="logo" className="h-10 invert" />
+        <button onClick={() => setIsMobileMenuOpen(false)}>
+          <X size={28} className="text-white" />
+        </button>
+      </div>
+
+      {/* Scroll Content */}
+      <div className="flex-1 overflow-y-auto px-6 py-4">
+
+        <p className="text-lg font-bold text-amber-400 mb-3">Properties</p>
+
+        {/* Properties List */}
+        <div className="space-y-2">
+          {propertyItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={() => handlePropertyClick(item.path)}
+              className="w-full flex items-center gap-3 py-3 text-gray-200 
+                bg-gray-800/40 rounded-lg px-3 hover:bg-gray-700/70 transition"
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Divider */}
+        <div className="my-5 border-t border-gray-700"></div>
+
+        {/* Navigation Links */}
+        <div className="space-y-2">
+          {navLinks.map((link) =>
+            link.external ? (
+              <a
+                key={link.name}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block py-2 text-gray-200 font-medium hover:text-amber-400"
+              >
+                {link.name}
+              </a>
+            ) : (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block py-2 text-gray-200 font-medium hover:text-amber-400"
+              >
+                {link.name}
+              </a>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* Footer Login/Logout Button */}
+      <div className="px-6 pb-6">
+        {user ? (
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-600 text-white py-3 rounded-full font-bold flex items-center justify-center gap-2"
+          >
+            <LogOut size={18} /> Logout
+          </button>
+        ) : (
+          <button
+            onClick={() => navigate("/login")}
+            className="w-full bg-gradient-to-r from-amber-500 to-orange-600 
+              text-gray-900 py-3 rounded-full font-bold flex items-center justify-center gap-2"
+          >
+            <LogIn size={18} /> Login
+          </button>
         )}
       </div>
-    </header>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+      </motion.header>
+    </>
   );
-};
-
-export default Header;
-
+}

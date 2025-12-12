@@ -10,7 +10,8 @@ import FAQ from './Pages/FAQ'
 import Footer from './Pages/Footer'
 import AgentListings from './Pages/AgentListings'
 import OurLocations from './Pages/Locations'
-import PropertySearchBanner from './Pages/PropertySearchBanner'
+import RedbriqBlenderseoExplain from './RedbriqBlenderseoExplain'
+// import PropertySearchBanner from './Pages/PropertySearchBanner'
 
 const Home = () => {
   return (
@@ -19,9 +20,10 @@ const Home = () => {
     <Hero />
  
     <OurLocations />
-       <PropertySearchBanner />
+       {/* <PropertySearchBanner /> */}
     <About />
     <Services />
+    <RedbriqBlenderseoExplain />
     {/* <Platforms /> */}
     <Gallery />
     <Testimonials />
