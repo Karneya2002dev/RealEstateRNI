@@ -11,6 +11,7 @@ import Footer from './Pages/Footer'
 import AgentListings from './Pages/AgentListings'
 import OurLocations from './Pages/Locations'
 import RedbriqBlenderseoExplain from './RedbriqBlenderseoExplain'
+import PropertyListing from './Pages/PropertyCategorySlider'
 // import PropertySearchBanner from './Pages/PropertySearchBanner'
 
 const Home = () => {
@@ -18,6 +19,7 @@ const Home = () => {
     <>
     
     <Hero />
+    <PropertyListing />
  
     <OurLocations />
        {/* <PropertySearchBanner /> */}

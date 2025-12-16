@@ -55,6 +55,7 @@ import AvailabilityPage from './Component/Availability'
 import AgentRegister from './Component/AgentRegister'
 import BuilderRegister from './Component/BuilderRegister'
 import PropertyPage from './Component/Pages/PropertyPages'
+import PropertyListing from './Component/Pages/PropertyCategorySlider'
 
 const App = () => {
   return (
@@ -66,6 +67,8 @@ const App = () => {
     <Route path='/login' element={<Login />} />
   <Route path="/register/agent" element={<AgentRegister />} />
     <Route path="/register/builder" element={<BuilderRegister />} />
+    <Route path="properties" element={<PropertyListing />} />
+
     <Route path='/location' element={<Locations/>} />
     <Route path="/locations/:slug" element={<LocationDetails />} />
     <Route path="/project/:id" element={<ProjectDetailPage />} />

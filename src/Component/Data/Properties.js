@@ -1,0 +1,36 @@
+// src/data/properties.js
+export const PROPERTIES = [
+  {
+    id: 1,
+    owner: "Godrej Azure",
+    developer: "Godrej Properties",
+    type: "buy",
+    propertyType: "Projects",
+    city: "Chennai",
+    locality: "Padur",
+    lat: 13.08,
+    lng: 80.27,
+  },
+  {
+    id: 2,
+    owner: "Aarti Borkar",
+    developer: "NA",
+    type: "rent",
+    propertyType: "Houses",
+    city: "Mumbai",
+    locality: "Goregaon West",
+    lat: 19.07,
+    lng: 72.87,
+  },
+  {
+    id: 3,
+    owner: "Mayank",
+    developer: "NA",
+    type: "buy",
+    propertyType: "Lands",
+    city: "Coimbatore",
+    locality: "Saravanampatti",
+    lat: 11.01,
+    lng: 76.96,
+  },
+];
