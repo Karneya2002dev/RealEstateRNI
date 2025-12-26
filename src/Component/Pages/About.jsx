@@ -2,163 +2,187 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import aboutImage from "../../assets/about-welcome.jpg";
+import missionVideo from "../../assets/app.mp4";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const About = () => {
-  const sectionRef = useRef(null);
-  const imageRef = useRef(null);
-  const glowRef = useRef(null);
-  const textRef = useRef(null);
-  const headingRef = useRef(null);
-  const buttonRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 🔹 Smooth Image Entry Animation
-      gsap.from(imageRef.current, {
+      gsap.from(".bento-card", {
+        y: 40,
         opacity: 0,
-        x: -100,
-        duration: 1.2,
+        duration: 0.7,
+        stagger: 0.08,
         ease: "power3.out",
         scrollTrigger: {
-          trigger: imageRef.current,
+          trigger: containerRef.current,
           start: "top 85%",
         },
       });
 
-      // 🔹 Parallax Image Motion
-      gsap.to(imageRef.current, {
-        yPercent: -10,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.2,
-        },
-      });
+      const isTouch = "ontouchstart" in window;
 
-      // 🔹 Subtle Glow Parallax Depth
-      gsap.to(glowRef.current, {
-        yPercent: -6,
-        opacity: 0.8,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.5,
-        },
-      });
+      if (!isTouch) {
+        gsap.utils.toArray(".bento-card").forEach((card) => {
+          card.addEventListener("mousemove", (e) => {
+            const r = card.getBoundingClientRect();
+            const x = e.clientX - r.left - r.width / 2;
+            const y = e.clientY - r.top - r.height / 2;
 
-      // 🔹 Heading Fade-Up
-      gsap.from(headingRef.current, {
-        opacity: 0,
-        y: 50,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: headingRef.current,
-          start: "top 85%",
-        },
-      });
+            gsap.to(card, {
+              rotateY: x / 18,
+              rotateX: -y / 18,
+              duration: 0.3,
+              ease: "power2.out",
+            });
+          });
 
-      // 🔹 Paragraphs Staggered Entry
-      gsap.from(textRef.current.children, {
-        opacity: 0,
-        y: 30,
-        stagger: 0.2,
-        duration: 0.9,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: textRef.current,
-          start: "top 85%",
-        },
-      });
-
-      // 🔹 CTA Button Pop-In
-      gsap.from(buttonRef.current, {
-        opacity: 0,
-        scale: 0.9,
-        duration: 0.8,
-        ease: "back.out(1.7)",
-        scrollTrigger: {
-          trigger: buttonRef.current,
-          start: "top 90%",
-        },
-      });
-    }, sectionRef);
+          card.addEventListener("mouseleave", () => {
+            gsap.to(card, {
+              rotateX: 0,
+              rotateY: 0,
+              duration: 0.4,
+              ease: "power3.out",
+            });
+          });
+        });
+      }
+    }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
     <section
-      id="about"
-      ref={sectionRef}
-      className="relative py-28 bg-[#f8f2e9] overflow-hidden"
-      aria-label="About Real Estate Network India"
+      ref={containerRef}
+      className="py-16 md:py-24 bg-[#f4f1eb] overflow-hidden " id="about"
     >
-      {/* Background Layers for Soft Depth */}
-      <div className="absolute inset-0 bg-primary/5" />
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent" />
-
-      {/* Main Container */}
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
-          {/* Image Section */}
-          <div ref={imageRef} className="relative">
-            <div
-              ref={glowRef}
-              className="absolute -inset-4 bg-primary/20 rounded-3xl blur-3xl"
-            />
-            <img
-              src={aboutImage}
-              alt="Professional real estate partnership"
-              className="relative rounded-3xl shadow-2xl w-full h-auto object-cover border border-white/10"
-              loading="lazy"
-            />
+      <div className="container mx-auto px-4 md:px-6">
+        {/* HEADER */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+          <div>
+            <span className="text-primary font-bold tracking-widest uppercase text-xs">
+              Real Estate Network India
+            </span>
+            <h2 className="text-4xl md:text-6xl font-black text-gray-900 mt-2">
+              Our Legacy.
+            </h2>
           </div>
 
-          {/* Text Section */}
-          <div>
-            <h2
-              ref={headingRef}
-              className="text-4xl md:text-5xl font-extrabold mb-6 text-gray-900 leading-tight"
-            >
-              Welcome to{" "}
-              <span className="relative text-primary">
-                Real Estate Network India
-                <span className="absolute left-0 bottom-0 w-full h-[3px] bg-primary rounded-full"></span>
-              </span>
-            </h2>
+          <button className="px-6 py-3 border-2 border-gray-900 rounded-full font-bold text-sm hover:bg-gray-900 hover:text-white transition">
+            Explore More
+          </button>
+        </div>
 
-            <div ref={textRef}>
-              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                At <span className="font-semibold text-gray-800">Real Estate Network India</span>,
-                we believe real estate is more than just transactions — it’s about building trust,
-                clarity, and long-term relationships with every client we serve.
+        {/* GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4 md:gap-6 auto-rows-auto md:auto-rows-[200px]">
+
+          {/* HERO CARD */}
+          <div className="bento-card group sm:col-span-2 md:col-span-8 md:row-span-2 bg-white rounded-3xl p-8 md:p-10 shadow-sm relative overflow-hidden [perspective:1000px]">
+            <div className="relative z-10 max-w-lg">
+              <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Welcome to Keerthi Promoters
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                For over a decade, we’ve delivered world-class real estate
+                solutions across Chennai with integrity and value.
               </p>
-
-              <p className="text-lg text-gray-600 leading-relaxed mb-8">
-                Whether you’re buying, investing, or managing property, our mission is to make your
-                journey simpler, smarter, and more rewarding — blending technology, transparency,
-                and a human touch.
-              </p>
-            </div>
-
-            <div ref={buttonRef}>
-              <button className="px-8 py-3 bg-primary  font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-primary/90 transition-all duration-300">
-                Learn More About Us
+              <button className="mt-8 bg-gray-900 text-white px-8 py-3 rounded-full font-bold hover:bg-primary transition">
+                Connect With Us
               </button>
             </div>
+
+            <div className="absolute inset-y-0 right-0 w-1/3 opacity-10 group-hover:opacity-20 transition pointer-events-none">
+              <img src={aboutImage} alt="" className="h-full w-full object-cover" />
+            </div>
           </div>
+
+          {/* IMAGE CARD */}
+          <div className="bento-card group sm:col-span-2 md:col-span-4 md:row-span-2 rounded-3xl overflow-hidden relative min-h-[280px]">
+            <img
+              src={aboutImage}
+              alt="About"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
+              <p className="text-white text-sm font-medium">
+                Headquartered in Chennai since 2009.
+              </p>
+            </div>
+          </div>
+
+          {/* STATS */}
+          <div className="bento-card md:col-span-3 bg-primary/10 rounded-3xl p-6 flex flex-col justify-center border border-primary/20">
+            <span className="text-4xl font-black text-primary">15+</span>
+            <span className="text-gray-700 font-bold uppercase text-xs">
+              Years of Excellence
+            </span>
+          </div>
+
+          <div className="bento-card md:col-span-3 bg-white rounded-3xl p-6 shadow-sm flex flex-col justify-center">
+            <span className="text-4xl font-black text-gray-900">2K+</span>
+            <span className="text-gray-500 font-bold uppercase text-xs">
+              Happy Families
+            </span>
+          </div>
+
+          {/* MISSION VIDEO */}
+          <div className="bento-card sm:col-span-2 md:col-span-6 md:row-span-2 rounded-3xl overflow-hidden relative min-h-[260px]">
+            <video
+              src={missionVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/60" />
+
+            <div className="relative z-10 p-8 md:p-10 text-white flex flex-col justify-between h-full">
+              <div>
+                <h4 className="text-primary font-bold uppercase text-xs tracking-widest mb-4">
+                  Our Mission
+                </h4>
+                <p className="text-lg md:text-xl text-gray-200">
+                  Providing complete real estate solutions under one roof
+                  through ethics, clarity, and expertise.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 mt-6">
+                <span className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-primary font-bold">
+                  →
+                </span>
+                <span className="text-xs text-gray-300">
+                  View Strategic Roadmap
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* CEO */}
+          <div className="bento-card md:col-span-3 bg-white rounded-3xl p-6 shadow-sm flex items-center gap-4">
+            <div className="w-12 h-12 bg-primary rounded-full" />
+            <div>
+              <p className="text-[10px] text-gray-400 font-bold uppercase">
+                CEO
+              </p>
+              <p className="font-bold text-gray-900">Kamala Hasan</p>
+            </div>
+          </div>
+
+          {/* QUOTE */}
+          <div className="bento-card md:col-span-3 bg-gray-200 rounded-3xl p-6 flex items-center justify-center">
+            <span className="italic text-gray-600 text-sm text-center">
+              “Traditional values, modern strategies.”
+            </span>
+          </div>
+
         </div>
       </div>
-
-      {/* Subtle Decorative Gradient Bottom */}
-      <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-primary/10 to-transparent" />
     </section>
   );
 };

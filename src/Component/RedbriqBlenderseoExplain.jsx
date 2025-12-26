@@ -1,250 +1,207 @@
-// src/components/RedbriqBlenderseoExplain.jsx
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useState, useEffect } from "react";
+import gsap from "gsap";
 import {
-  Award,
-  Zap,
-  ArrowRight,
-  Link,
+  FileText,
   TrendingUp,
-  Cpu,
-  User,
+  BarChart3,
+  Phone,
+  Target,
+  Users,
+  ArrowUpRight,
+  Sparkles
 } from "lucide-react";
-
-/**
- * Create Microsite + Digital View + FunnelWorks explanation cards
- * Light Theme – production ready
- */
-
-/* ===================== Animations ===================== */
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.96 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] },
-  },
-};
-
-/* ===================== Tailwind-safe colors ===================== */
-
-const colorClasses = {
-  amber: {
-    base: "bg-amber-600 hover:bg-amber-700",
-    link: "text-amber-500",
-    iconBg: "bg-amber-50 text-amber-600 border border-amber-200",
-    strip: "bg-amber-500",
-  },
-  sky: {
-    base: "bg-sky-600 hover:bg-sky-700",
-    link: "text-sky-500",
-    iconBg: "bg-sky-50 text-sky-600 border border-sky-200",
-    strip: "bg-sky-500",
-  },
-  emerald: {
-    base: "bg-emerald-600 hover:bg-emerald-700",
-    link: "text-emerald-500",
-    iconBg: "bg-emerald-50 text-emerald-600 border border-emerald-200",
-    strip: "bg-emerald-500",
-  },
-  green: {
-    iconBg: "bg-green-100 text-green-600",
-  },
-};
-
-/* ===================== Feature Cards ===================== */
 
 const features = [
   {
-    title: "Create Microsite — Agent Pages & Property Showcase",
-    description:
-      "Create microsites instantly for real estate agents and projects. Each microsite includes property listings, inventory views, enquiry forms, and WhatsApp CTAs to capture high-intent buyers.",
-    color: "amber",
-    icon: Award,
-    bullets: [
-      "Instant agent & project microsite",
-      "Property listings & inventory",
-      "WhatsApp, call & enquiry capture",
-    ],
-    primaryLink: {
-      href: "https://app.redbriq.com/developer/home",
-      text: "Create Microsite",
-      color: "amber",
-      external: true,
-    },
-    secondaryLink: { href: "/signup", text: "Start free" },
+    title: "Property & Project Management",
+    description: "Complete portfolio management with real-time analytics and project oversight from concept to completion.",
+    icon: FileText,
+    color: "from-blue-600 to-indigo-400",
+    gridClass: "md:col-span-2 md:row-span-1",
+    tag: "Scale"
   },
   {
-    title: "Digital View — Search Visibility & Online Reach",
-    description:
-      "Digital View improves how your microsites appear online with location-based visibility, structured pages, and enhanced digital discovery.",
-    color: "sky",
+    title: "Marketing Automation",
+    description: "Lead generation and nurturing with AI-driven campaign tools.",
     icon: TrendingUp,
-    bullets: [
-      "Location-based digital pages",
-      "Optimized content structure",
-      "Higher online discoverability",
-    ],
-    primaryLink: {
-      href: "https://realestatesnetworkindiapvtltd.com/blindersoe-panel/login",
-      text: "Explore Digital View",
-      color: "sky",
-      external: true,
-    },
-    secondaryLink: { href: "/contact", text: "Request walkthrough" },
+    color: "from-rose-500 to-orange-400",
+    gridClass: "md:col-span-1 md:row-span-1",
   },
   {
-    title: "FunnelWorks — Automated Lead Nurturing",
-    description:
-      "FunnelWorks automates lead follow-ups with intelligent workflows, ensuring every enquiry is tracked, assigned, and converted.",
-    color: "emerald",
-    icon: Zap,
-    bullets: [
-      "Automated lead workflows",
-      "Custom funnels for agents",
-      "Smart task assignment",
-    ],
-    primaryLink: {
-      href: "https://www.funnelworkz.com/",
-      text: "Explore FunnelWorks",
-      color: "emerald",
-    },
-    secondaryLink: { href: "/pricing", text: "Plans & pricing" },
+    title: "Prospect Intelligence",
+    description: "Track prospects through the sales pipeline with automated follow-ups and smart call scheduling.",
+    icon: Target,
+    color: "from-amber-500 to-yellow-400",
+    gridClass: "md:col-span-1 md:row-span-2",
+    highlight: true,
+  },
+  {
+    title: "Real-time Analytics",
+    description: "Flexible reporting processes with automated distribution and deep-dive insights.",
+    icon: BarChart3,
+    color: "from-emerald-600 to-teal-400",
+    gridClass: "md:col-span-2 md:row-span-1",
+  },
+  {
+    title: "AI Lead Scoring",
+    description: "Prioritize high-intent property inquiries automatically.",
+    icon: Users,
+    color: "from-purple-600 to-fuchsia-400",
+    gridClass: "md:col-span-1 md:row-span-1",
+  },
+  {
+    title: "Contact Hub",
+    description: "Unified interface for tasks, deals, and history.",
+    icon: Phone,
+    color: "from-sky-500 to-cyan-400",
+    gridClass: "md:col-span-1 md:row-span-1",
   },
 ];
 
-/* ===================== Component ===================== */
+const FeatureCard = ({ item }) => {
+  const cardRef = useRef(null);
+  const iconRef = useRef(null);
+  const buttonRef = useRef(null);
 
-export default function RedbriqBlenderseoExplain() {
+  const handleMouseMove = (e) => {
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // 1. Spotlight Effect
+    cardRef.current.style.setProperty("--x", `${x}px`);
+    cardRef.current.style.setProperty("--y", `${y}px`);
+
+    // 2. Parallax Icon Movement
+    const moveX = (x - rect.width / 2) / 10;
+    const moveY = (y - rect.height / 2) / 10;
+    gsap.to(iconRef.current, { x: moveX, y: moveY, duration: 0.6, ease: "power2.out" });
+
+    // 3. Magnetic Button
+    const btnRect = buttonRef.current.getBoundingClientRect();
+    const btnX = e.clientX - (btnRect.left + btnRect.width / 2);
+    const btnY = e.clientY - (btnRect.top + btnRect.height / 2);
+    if (Math.abs(btnX) < 50 && Math.abs(btnY) < 50) {
+      gsap.to(buttonRef.current, { x: btnX * 0.4, y: btnY * 0.4, duration: 0.3 });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    gsap.to(iconRef.current, { x: 0, y: 0, duration: 0.6 });
+    gsap.to(buttonRef.current, { x: 0, y: 0, duration: 0.3 });
+  };
+
   return (
-    <section className="relative py-24 bg-gradient-to-b from-white to-gray-50 text-gray-900 overflow-hidden">
-      {/* Background accents */}
-      <div className="absolute top-10 left-10 w-40 h-40 bg-amber-100 rounded-full blur-3xl opacity-40" />
-      <div className="absolute top-32 right-12 w-48 h-48 bg-sky-100 rounded-full blur-3xl opacity-40" />
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-52 h-52 bg-emerald-100 rounded-full blur-3xl opacity-40" />
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`group relative overflow-hidden rounded-[3rem] p-10 transition-all duration-700 bg-white border border-gray-100 flex flex-col justify-between hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] ${item.gridClass}`}
+      style={{
+        "--x": "0px",
+        "--y": "0px",
+      }}
+    >
+      {/* Dynamic Background Glow */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+           style={{ background: `radial-gradient(circle at var(--x) var(--y), rgba(var(--primary-rgb), 0.05) 0%, transparent 50%)` }} />
 
-      <div className="container mx-auto px-6 relative z-10">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-5xl font-extrabold tracking-tight"
-          >
-            Create Microsite → Digital View → Get Leads
-          </motion.h2>
+      {/* AI Processing Scan Line */}
+      <div className="absolute top-0 left-[-100%] w-full h-[2px] bg-gradient-to-r from-transparent via-primary/20 to-transparent group-hover:animate-scan z-0" />
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mt-4 text-gray-600 text-lg"
+      <div className="relative z-10">
+        <div className="flex justify-between items-start mb-8">
+          <div 
+            ref={iconRef}
+            className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white bg-gradient-to-br shadow-xl transition-transform duration-500 ${item.color}`}
           >
-            A complete real-estate growth flow — build microsites, boost digital
-            visibility, and convert qualified leads.
-          </motion.p>
+            <item.icon size={32} strokeWidth={1.5} />
+          </div>
+          {item.tag && (
+            <span className="px-3 py-1 rounded-full bg-gray-100 text-[10px] font-black uppercase tracking-widest text-gray-500">
+              {item.tag}
+            </span>
+          )}
         </div>
 
-        {/* Feature Cards */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-12"
-        >
-          {features.map((f) => {
-            const Icon = f.icon;
-            const classes = colorClasses[f.color];
+        <h3 className={`text-2xl font-bold mb-4 tracking-tight ${item.highlight ? "text-primary" : "text-gray-900"}`}>
+          {item.title}
+        </h3>
+        <p className="text-gray-500 leading-relaxed text-sm md:text-base opacity-90 group-hover:opacity-100 transition-opacity">
+          {item.description}
+        </p>
+      </div>
 
-            return (
-              <motion.article
-                key={f.title}
-                variants={cardVariants}
-                className="relative bg-white rounded-3xl p-10 shadow-xl border border-gray-100 hover:scale-[1.02] transition-transform"
-              >
-                <div
-                  className={`absolute top-0 left-0 right-0 h-2 rounded-t-3xl ${classes.strip}`}
-                />
+      <div 
+        ref={buttonRef}
+        className="relative z-10 w-fit mt-8 flex items-center gap-3 text-gray-900 group-hover:text-primary transition-colors cursor-pointer"
+      >
+        <div className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center group-hover:border-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+          <ArrowUpRight size={18} />
+        </div>
+        <span className="text-xs font-black uppercase tracking-tighter">Explore Solution</span>
+      </div>
+    </div>
+  );
+};
 
-                <div
-                  className={`flex items-center justify-center w-16 h-16 rounded-2xl ${classes.iconBg} mb-6`}
-                >
-                  <Icon size={30} />
-                </div>
+const Features = () => {
+  return (
+    <section className="bg-[#FAF9F6] py-24 md:py-40 relative overflow-hidden">
+      {/* Decorative Background Element */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -mr-64 -mt-64" />
 
-                <h3 className="text-2xl font-bold mb-4">{f.title}</h3>
-                <p className="text-gray-600 mb-6">{f.description}</p>
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        
+        {/* Header Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-end mb-20 gap-12">
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <Sparkles size={20} />
+              </div>
+              <h2 className="text-primary font-bold tracking-[0.3em] uppercase text-xs">
+                Next-Gen Infrastructure
+              </h2>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black text-gray-900 leading-[0.9] tracking-tighter">
+              The OS for <br />
+              <span className="text-gray-300">Property Empires.</span>
+            </h2>
+          </div>
+          <div className="lg:pl-20 border-l border-gray-200">
+            <p className="text-gray-500 text-lg leading-relaxed mb-6">
+              We've re-engineered real estate management from the ground up. Modular, automated, and hyper-intuitive.
+            </p>
+            <div className="flex gap-8">
+              <div>
+                <p className="text-2xl font-bold text-gray-900">99%</p>
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Efficiency</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">24/7</p>
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Automation</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                <ul className="space-y-3 text-sm text-gray-700 mb-10 border-l-2 border-gray-200 pl-4">
-                  {f.bullets.map((b, i) => (
-                    <li key={i} className="flex items-start">
-                      <Link
-                        size={16}
-                        className={`mr-2 mt-1 ${classes.link}`}
-                      />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <a
-                    href={f.primaryLink.href}
-                    target={f.primaryLink.external ? "_blank" : undefined}
-                    rel={
-                      f.primaryLink.external
-                        ? "noopener noreferrer"
-                        : undefined
-                    }
-                    className={`inline-flex items-center justify-center gap-2 px-6 py-3 ${colorClasses[f.primaryLink.color].base} text-white rounded-xl font-semibold`}
-                  >
-                    {f.primaryLink.text}
-                    <ArrowRight size={16} />
-                  </a>
-
-                 <a
-  href={f.secondaryLink.href}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex items-center justify-center px-5 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50"
->
-  {f.secondaryLink.text}
-</a>
-
-                </div>
-              </motion.article>
-            );
-          })}
-        </motion.div>
-
-        {/* Final CTA */}
-        <div className="text-center mt-28">
-          <a
-            href="https://app.redbriq.com/developer/home"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-12 py-5 bg-amber-600 text-white rounded-full font-bold text-xl shadow-lg hover:bg-amber-700 hover:scale-[1.03] transition"
-          >
-            <Zap size={24} />
-            Create Your Microsite Now
-            <ArrowRight size={24} />
-          </a>
+        {/* Masonry Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[320px] gap-8">
+          {features.map((item, index) => (
+            <FeatureCard key={index} item={item} />
+          ))}
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default Features;
+
+// Add this to your globals.css or Tailwind config
+// @keyframes scan {
+//   0% { left: -100%; }
+//   100% { left: 100%; }
+// }
+// .animate-scan { animation: scan 3s linear infinite; }
