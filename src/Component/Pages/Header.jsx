@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../../assets/logoo.png";
 
-/* Property Items with Icons */
+/* Property Items */
 const propertyItems = [
   { label: "New Flats", icon: <Home size={16} />, path: "new-flats" },
   { label: "Old Used Flats", icon: <Building2 size={16} />, path: "old-flats" },
@@ -20,7 +20,6 @@ const propertyItems = [
   { label: "Rental / Lease", icon: <Building2 size={16} />, path: "rental-lease" },
 ];
 
-/* Add Investors Link Here */
 const navLinks = [
   { name: "About Us", href: "#about" },
   { name: "Services", href: "#services" },
@@ -33,29 +32,21 @@ const navLinks = [
 ];
 
 const LinkPill = () => (
-  <span className="absolute inset-0 rounded-full scale-x-0 bg-amber-500/10 group-hover:scale-x-100 transition-transform duration-300"></span>
+  <span className="absolute inset-0 rounded-full scale-x-0 bg-red-500/10 group-hover:scale-x-100 transition-transform duration-300"></span>
 );
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [propertyOpen, setPropertyOpen] = useState(false);
+  const [mobilePropertyOpen, setMobilePropertyOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [showWelcome, setShowWelcome] = useState(false);
-
-  const [isScrolled, setIsScrolled] = useState(false); // 👈 NEW
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Scroll Listener
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -63,9 +54,8 @@ export default function Header() {
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-
+      const parsed = JSON.parse(storedUser);
+      setUser(parsed);
       setShowWelcome(true);
       setTimeout(() => setShowWelcome(false), 3000);
     }
@@ -76,61 +66,60 @@ export default function Header() {
     setUser(null);
     navigate("/login");
     setIsMobileMenuOpen(false);
+    setMobilePropertyOpen(false);
   };
 
   const handlePropertyClick = (path) => {
     navigate(`/properties/${path}`);
     setPropertyOpen(false);
     setIsMobileMenuOpen(false);
+    setMobilePropertyOpen(false);
   };
 
-  // 👇 When scrolled text color changes
-  const navTextColor = isScrolled ? "text-gray-800" : "text-gray-100";
-  const iconColor = isScrolled ? "text-black" : "text-white";
+  // UI States
+  const navTextColor = "text-gray-800";
+  const iconColor = "text-gray-800";
+  const propertyBtnColor = propertyOpen
+    ? "bg-red-500 text-white"
+    : "text-gray-800 bg-white border border-gray-100 hover:bg-gray-50";
 
   return (
     <>
+      {/* Welcome Toast */}
       <AnimatePresence>
         {showWelcome && user && (
           <motion.div
-            initial={{ opacity: 0, y: -30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            transition={{ duration: 0.4 }}
-            className="fixed top-5 right-5 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-3 rounded-xl shadow-2xl z-[999]"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-5 right-5 bg-red-600 text-white px-6 py-3 rounded-xl shadow-2xl z-[999] flex items-center gap-2"
           >
-            Welcome back,{" "}
-            <span className="font-bold">{user.name.split(" ")[0]}</span>{" "}
-            <Star size={18} className="inline-block" />
+            Welcome back, <b>{user.name.split(" ")[0]}</b>{" "}
+            <Star size={16} fill="white" />
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* NAVBAR */}
       <motion.header
-        initial={{ y: -40 }}
-        animate={{ y: isScrolled ? 5 : 0 }} // 👈 Moves slightly down on scroll
-        className={`fixed top-0 w-full z-50 transition-all duration-300 
-          ${isScrolled
-            ? "bg-white backdrop-blur-lg shadow-lg border-b border-gray-200"
-            : "bg-transparent backdrop-blur-none"
-          }`}
+        className={`fixed top-0 w-full z-50 transition-all duration-300 bg-white border-b border-gray-100 ${
+          isScrolled ? "py-2 shadow-md" : "py-3 shadow-sm"
+        }`}
       >
-        <nav className="container mx-auto px-4 sm:px-6 lg:px-10 py-3">
-          <div className="flex items-center justify-between">
+        <nav className="container mx-auto px-6">
+          <div className="flex justify-between items-center">
 
-            {/* LOGO */}
-            <motion.a href="/" className="flex items-center gap-2">
-              <motion.img
-                src={logo}
-                alt="Logo"
-                className={`h-14 transition-all ${isScrolled ? "invert-0" : "invert"}`}
-                whileHover={{ scale: 1.1, rotate: 4 }}
-              />
-            </motion.a>
+            {/* Logo */}
+            <motion.div 
+               onClick={() => navigate("/")}
+               className="cursor-pointer"
+               whileHover={{ scale: 1.05 }}
+            >
+              <img src={logo} className="h-12 md:h-14 object-contain" alt="RNI Logo" />
+            </motion.div>
 
-            {/* Desktop */}
-            <div className="hidden lg:flex items-center gap-6">
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-4">
 
               {/* Properties Dropdown */}
               <div
@@ -139,45 +128,35 @@ export default function Header() {
                 onMouseLeave={() => setPropertyOpen(false)}
               >
                 <button
-                  className={`flex items-center gap-1 font-semibold py-2 px-3 rounded-full transition
-                    ${propertyOpen
-                      ? "bg-amber-600 text-gray-900"
-                      : isScrolled
-                        ? "text-gray-800 hover:bg-amber-600 hover:text-gray-900"
-                        : "text-white hover:bg-amber-600 hover:text-gray-900"} `}
+                  className={`flex items-center gap-1 px-5 py-2 rounded-full font-bold transition-all ${propertyBtnColor}`}
                 >
                   Properties
-                  <ChevronDown
-                    className={`h-4 w-4 transition-transform ${iconColor}`}
-                    style={{ transform: propertyOpen ? "rotate(180deg)" : "" }}
-                  />
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${propertyOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                {/* DROPDOWN */}
                 <AnimatePresence>
                   {propertyOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 15 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 15 }}
-                      className="absolute left-0 mt-4 w-[340px] rounded-2xl bg-gray-800 text-white border border-gray-700 shadow-xl overflow-hidden"
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute left-0 mt-2 w-[320px] rounded-2xl bg-white border border-gray-100 shadow-2xl overflow-hidden"
                     >
-                      <div className="px-5 py-3 bg-gray-900 text-amber-500 font-bold text-lg border-b border-amber-500/20">
-                        Explore Real Estate
+                      <div className="px-5 py-4 bg-gray-50/50 text-red-600 text-xs font-black uppercase tracking-widest border-b border-gray-100">
+                        Explore Categories
                       </div>
-                      <div className="grid grid-cols-1 divide-y divide-gray-700 p-2">
-                        {propertyItems.map((item, i) => (
-                          <motion.button
+                      <div className="p-2 grid grid-cols-1">
+                        {propertyItems.map((item) => (
+                          <button
                             key={item.label}
-                            transition={{ delay: i * 0.03 }}
                             onClick={() => handlePropertyClick(item.path)}
-                            className="w-full flex items-center gap-4 px-3 py-3 hover:bg-gray-700 hover:text-amber-300 transition"
+                            className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-red-50 text-gray-700 hover:text-red-600 rounded-xl transition-all group text-sm font-semibold"
                           >
-                            <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-gray-900 text-amber-500">
+                            <div className="h-8 w-8 bg-gray-100 group-hover:bg-white rounded-lg flex items-center justify-center text-gray-500 group-hover:text-red-500 transition-colors shadow-sm">
                               {item.icon}
                             </div>
-                            <span className="font-medium">{item.label}</span>
-                          </motion.button>
+                            {item.label}
+                          </button>
                         ))}
                       </div>
                     </motion.div>
@@ -185,155 +164,121 @@ export default function Header() {
                 </AnimatePresence>
               </div>
 
-              {/* Desktop Links */}
-              {navLinks.map((link) =>
-                link.external ? (
-                  <motion.a
+              {/* Nav Links */}
+              <div className="flex items-center gap-1">
+                {navLinks.map((link) => (
+                  <a
                     key={link.name}
                     href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`relative font-medium group px-3 py-2 rounded-full ${navTextColor}`}
-                  >
-                    <LinkPill />
-                    <span className="relative z-10 font-bold">{link.name}</span>
-                  </motion.a>
-                ) : (
-                  <motion.a
-                    key={link.name}
-                    href={link.href}
-                    className={`relative font-medium group px-3 py-2 rounded-full ${navTextColor}`}
+                    target={link.external ? "_blank" : "_self"}
+                    className={`relative group px-4 py-2 rounded-full text-sm font-bold ${navTextColor} transition-colors hover:text-red-600`}
                   >
                     <LinkPill />
                     <span className="relative z-10">{link.name}</span>
-                  </motion.a>
-                )
-              )}
+                  </a>
+                ))}
+              </div>
 
-              {/* Login / Logout */}
-              {user ? (
-                <button
-                  onClick={handleLogout}
-                  className={`px-5 py-2 rounded-full flex gap-2 font-semibold
-                    ${isScrolled ? "bg-red-600 text-white" : "bg-red-700 text-white"}`}
-                >
-                  <LogOut size={18} /> Logout
-                </button>
-              ) : (
-                <button
-                  onClick={() => navigate("/login")}
-                  className={`px-5 py-2 rounded-full flex gap-2 font-bold
-                    ${isScrolled
-                      ? "bg-amber-500 text-gray-900"
-                      : "bg-gradient-to-r from-amber-500 to-orange-600 text-gray-900"
-                    }`}
-                >
-                  <LogIn size={18} /> Login
-                </button>
-              )}
+              {/* Auth Buttons */}
+              <div className="ml-2 border-l pl-4 border-gray-100">
+                {user ? (
+                  <button
+                    onClick={handleLogout}
+                    className="bg-gray-100 text-gray-800 hover:bg-red-600 hover:text-white px-5 py-2 rounded-full flex items-center gap-2 font-bold transition-all shadow-sm"
+                  >
+                    <LogOut size={16} /> Logout
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="bg-red-600 text-white px-6 py-2 rounded-full flex items-center gap-2 font-bold transition-all shadow-md hover:shadow-red-200 hover:bg-red-700"
+                  >
+                    <LogIn size={16} /> Login
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* Mobile Menu Icon */}
+            {/* Mobile Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`${iconColor} lg:hidden p-2`}
+              className="lg:hidden p-2 rounded-xl bg-gray-50 text-gray-800"
             >
-              {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
+
+          {/* Mobile Menu */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="lg:hidden mt-4 bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-xl"
+              >
+                <div className="flex flex-col p-4 gap-2">
+                  <button
+                    onClick={() => setMobilePropertyOpen(!mobilePropertyOpen)}
+                    className={`flex justify-between items-center px-4 py-3 rounded-xl font-bold transition-colors ${mobilePropertyOpen ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-800'}`}
+                  >
+                    Properties <ChevronDown className={`h-4 w-4 transition-transform ${mobilePropertyOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {mobilePropertyOpen && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid grid-cols-1 gap-1 pl-4 py-2"
+                      >
+                        {propertyItems.map((item) => (
+                          <button
+                            key={item.label}
+                            onClick={() => handlePropertyClick(item.path)}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-50 text-sm font-semibold"
+                          >
+                            <span className="text-red-500">{item.icon}</span>
+                            {item.label}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {navLinks.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      target={link.external ? "_blank" : "_self"}
+                      className="px-4 py-3 rounded-xl text-gray-700 font-bold hover:bg-gray-50 transition"
+                    >
+                      {link.name}
+                    </a>
+                  ))}
+
+                  <div className="mt-2 pt-4 border-t border-gray-100">
+                    {user ? (
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 text-gray-800 rounded-xl font-bold"
+                      >
+                        <LogOut size={18} /> Logout
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => navigate("/login")}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-600 text-white rounded-xl font-bold shadow-lg"
+                      >
+                        <LogIn size={18} /> Login
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </nav>
-
-        {/* Mobile Menu */}
-      {/* Mobile Menu */}
-<AnimatePresence>
-  {isMobileMenuOpen && (
-    <motion.div
-      initial={{ x: "100%" }}
-      animate={{ x: 0 }}
-      exit={{ x: "100%" }}
-      className="lg:hidden fixed top-0 right-0 h-screen w-4/5 max-w-xs bg-gray-900 z-[9999] shadow-2xl flex flex-col"
-    >
-      {/* Header inside menu */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-gray-700">
-        <img src={logo} alt="logo" className="h-10 invert" />
-        <button onClick={() => setIsMobileMenuOpen(false)}>
-          <X size={28} className="text-white" />
-        </button>
-      </div>
-
-      {/* Scroll Content */}
-      <div className="flex-1 overflow-y-auto px-6 py-4">
-
-        <p className="text-lg font-bold text-amber-400 mb-3">Properties</p>
-
-        {/* Properties List */}
-        <div className="space-y-2">
-          {propertyItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => handlePropertyClick(item.path)}
-              className="w-full flex items-center gap-3 py-3 text-gray-200 
-                bg-gray-800/40 rounded-lg px-3 hover:bg-gray-700/70 transition"
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Divider */}
-        <div className="my-5 border-t border-gray-700"></div>
-
-        {/* Navigation Links */}
-        <div className="space-y-2">
-          {navLinks.map((link) =>
-            link.external ? (
-              <a
-                key={link.name}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block py-2 text-gray-200 font-medium hover:text-amber-400"
-              >
-                {link.name}
-              </a>
-            ) : (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block py-2 text-gray-200 font-medium hover:text-amber-400"
-              >
-                {link.name}
-              </a>
-            )
-          )}
-        </div>
-      </div>
-
-      {/* Footer Login/Logout Button */}
-      <div className="px-6 pb-6">
-        {user ? (
-          <button
-            onClick={handleLogout}
-            className="w-full bg-red-600 text-white py-3 rounded-full font-bold flex items-center justify-center gap-2"
-          >
-            <LogOut size={18} /> Logout
-          </button>
-        ) : (
-          <button
-            onClick={() => navigate("/login")}
-            className="w-full bg-gradient-to-r from-amber-500 to-orange-600 
-              text-gray-900 py-3 rounded-full font-bold flex items-center justify-center gap-2"
-          >
-            <LogIn size={18} /> Login
-          </button>
-        )}
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
-
       </motion.header>
     </>
   );
