@@ -92,7 +92,7 @@ export default function Header() {
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-5 right-5 bg-red-600 text-white px-6 py-3 rounded-xl shadow-2xl z-[999] flex items-center gap-2"
+            className="fixed top-5 right-5 bg-red-600 text-white px-6 py-3 rounded-xl shadow-2xl z-[9999] flex items-center gap-2"
           >
             Welcome back, <b>{user.name.split(" ")[0]}</b>{" "}
             <Star size={16} fill="white" />
