@@ -198,10 +198,6 @@
 // }
 
 
-
-
-
-
 import React, { useMemo, useEffect, useState } from "react";
 import {
   MapContainer,
@@ -210,65 +206,57 @@ import {
   Popup,
   useMap,
 } from "react-leaflet";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { PROPERTIES } from "../Data/Properties";
-import { MapPin, Search, Navigation2 } from "lucide-react";
+import {
+  MapPin,
+  Building2,
+  Search,
+  Navigation2,
+  Filter,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import "leaflet/dist/leaflet.css";
 
-/* ================= CONSTANTS ================= */
 const INDIA_CENTER = [22.5937, 78.9629];
 const INDIA_ZOOM = 5;
 
-const PROPERTY_TYPES = [
-  "Apartment",
-  "Independent House",
-  "Villa",
-  "Projects",
-];
-
-const BHK_BY_PROPERTY = {
-  Apartment: ["1 BHK", "2 BHK", "3 BHK", "4 BHK"],
-  "Independent House": ["1 BHK", "2 BHK", "3 BHK", "4 BHK"],
-  Villa: ["2 BHK", "3 BHK", "4 BHK"],
-  Projects: [],
-};
-
-const CONSTRUCTION_STATUS = [
-  "Under Construction",
-  "Ready to Move",
-  "New Launch",
-];
-
-/* ================= MAP CONTROLLER ================= */
-const MapController = ({ properties, location }) => {
+const MapController = ({ properties }) => {
   const map = useMap();
 
   useEffect(() => {
-    if (!location || properties.length === 0) {
-      map.flyTo(INDIA_CENTER, INDIA_ZOOM, { duration: 1.5 });
+    const validProperties = properties.filter(
+      (p) => Number.isFinite(p.lat) && Number.isFinite(p.lng)
+    );
+
+    if (!validProperties.length) {
+      map.flyTo(CHENNAI_CENTER, CHENNAI_ZOOM, { duration: 1.5 });
       return;
     }
 
     if (properties.length === 1) {
-      map.flyTo([properties[0].lat, properties[0].lng], 14, {
-        duration: 1.5,
-      });
+      map.flyTo(
+        [properties[0].lat, properties[0].lng],
+        14,
+        { duration: 1.5 }
+      );
       return;
     }
 
-    const bounds = properties.map((p) => [p.lat, p.lng]);
+    const bounds = validProperties.map((p) => [p.lat, p.lng]);
     map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
-  }, [properties, location, map]);
+  }, [properties, map]);
 
   return null;
 };
 
-/* ================= MAIN COMPONENT ================= */
+/* ================= MAIN PAGE ================= */
 export default function PropertyListing() {
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const [hoveredProperty, setHoveredProperty] = useState(null);
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const location = params.get("location") || "";
   const query = params.get("q") || "";
@@ -278,36 +266,63 @@ export default function PropertyListing() {
   const minPrice = Number(params.get("minPrice")) || 0;
   const maxPrice = Number(params.get("maxPrice")) || Infinity;
 
-  /* ================= FILTER LOGIC ================= */
+  useEffect(() => {
+    fetch("http://localhost:5000/api/properties")
+      .then((res) => res.json())
+      .then((data) => {
+        const list = data.data || data;
+        const normalized = list
+          .map((p) => {
+            const lat = Number(p.lat ?? p.latitude);
+            const lng = Number(p.lng ?? p.longitude);
+            if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+
+            return {
+              id: p.id,
+              propertyType:
+                typeof p.propertyType === "object"
+                  ? p.propertyType.name
+                  : p.propertyType || p.name || "Property",
+              city: typeof p.city === "object" ? p.city.name : p.city || "",
+              state: typeof p.state === "object" ? p.state.name : p.state || "",
+              locality:
+                typeof p.locality === "object"
+                  ? p.locality.name
+                  : p.locality || "",
+              developer:
+                typeof p.developer === "object"
+                  ? p.developer.name
+                  : p.developer || "Developer",
+              lat,
+              lng,
+              image: p.image || p.cover_image || "",
+            };
+          })
+          .filter(Boolean);
+
+        setProperties(normalized);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load properties", err);
+        setLoading(false);
+      });
+  }, []);
+
   const filteredProperties = useMemo(() => {
-    return PROPERTIES.filter((p) => {
+    return properties.filter((p) => {
       const locationMatch = location
-        ? `${p.city} ${p.locality}`.toLowerCase().includes(location.toLowerCase())
+        ? `${p.city} ${p.state || ""} ${p.locality}`
+            .toLowerCase()
+            .includes(location.toLowerCase())
         : true;
 
-      const typeMatch = type ? p.propertyType === type : true;
-
-      const bhkMatch = bhk ? p.bhk?.includes(bhk) : true;
-
-      const statusMatch = status ? p.status === status : true;
-
-      /* PRICE PARSER */
-      const numericPrice = (() => {
-        if (!p.price) return 0;
-        const value = p.price.toLowerCase().replace(/₹|,/g, "");
-
-        if (value.includes("month")) return parseInt(value);
-        if (value.includes("lakh")) return parseFloat(value) * 100000;
-        if (value.includes("cr")) return parseFloat(value) * 10000000;
-
-        return 0;
-      })();
-
-      const priceMatch =
-        numericPrice >= minPrice && numericPrice <= maxPrice;
+      const typeMatch = type
+        ? p.propertyType?.toLowerCase() === type.toLowerCase()
+        : true;
 
       const keywordMatch = query
-        ? `${p.owner} ${p.developer} ${p.propertyType}`
+        ? `${p.propertyType} ${p.owner} ${p.developer}`
             .toLowerCase()
             .includes(query.toLowerCase())
         : true;
@@ -321,16 +336,21 @@ export default function PropertyListing() {
         keywordMatch
       );
     });
-  }, [location, query, type, bhk, status, minPrice, maxPrice]);
+  }, [location, type, query]);
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50">
+    <div className="h-screen flex flex-col bg-[#f8fafc] text-slate-900">
 
       {/* ================= HEADER ================= */}
-      <header className="bg-white border-b px-6 py-4 flex gap-4 justify-between items-center sticky top-0 z-20">
+      <header className="bg-white border-b px-6 py-4 flex gap-4 items-center sticky top-0 z-20 shadow-sm">
+        <h1 className="text-xl font-bold">RealEstateX</h1>
 
-        <div className="relative max-w-md w-full">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        {/* SEARCH BAR (SYNCED WITH HERO) */}
+        <div className="relative max-w-md w-full group">
+          <Search
+            size={18}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+          />
           <input
             value={location}
             onChange={(e) =>
@@ -338,134 +358,147 @@ export default function PropertyListing() {
                 location: e.target.value,
                 q: query,
                 type,
-                bhk,
-                status,
-                minPrice,
-                maxPrice,
               })
             }
             placeholder="Search city or locality..."
-            className="w-full bg-slate-100 rounded-xl py-2.5 pl-10 pr-4 outline-none"
+            className="w-full bg-slate-100 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
-        <div className="hidden lg:flex gap-3">
-
-          <select
-            value={type}
-            onChange={(e) =>
-              setParams({ location, q: query, type: e.target.value, bhk: "", status })
-            }
-            className="bg-slate-100 px-3 py-2 rounded-lg text-sm"
-          >
-            <option value="">Property</option>
-            {PROPERTY_TYPES.map((t) => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
-
-          <select
-            value={bhk}
-            disabled={!BHK_BY_PROPERTY[type]?.length}
-            onChange={(e) =>
-              setParams({ location, q: query, type, bhk: e.target.value, status })
-            }
-            className="bg-slate-100 px-3 py-2 rounded-lg text-sm"
-          >
-            <option value="">
-              {BHK_BY_PROPERTY[type]?.length ? "BHK" : "N/A"}
-            </option>
-            {(BHK_BY_PROPERTY[type] || []).map((b) => (
-              <option key={b} value={b}>{b}</option>
-            ))}
-          </select>
-
-          <select
-            onChange={(e) => {
-              const [min, max] = e.target.value.split("-");
-              setParams({ location, q: query, type, bhk, status, minPrice: min, maxPrice: max });
-            }}
-            className="bg-slate-100 px-3 py-2 rounded-lg text-sm"
-          >
-            <option value="">Price</option>
-            <option value="0-3000000">Below ₹30L</option>
-            <option value="3000000-6000000">₹30L – ₹60L</option>
-            <option value="6000000-10000000">₹60L – ₹1Cr</option>
-            <option value="10000000-99999999">Above ₹1Cr</option>
-          </select>
-
-          <select
-            value={status}
-            onChange={(e) =>
-              setParams({ location, q: query, type, bhk, status: e.target.value })
-            }
-            className="bg-slate-100 px-3 py-2 rounded-lg text-sm"
-          >
-            <option value="">Status</option>
-            {CONSTRUCTION_STATUS.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
-        </div>
+        <button className="hidden lg:flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">
+          <Filter size={16} /> Filters
+        </button>
       </header>
 
-      {/* ================= CONTENT ================= */}
+      {/* CONTENT */}
       <main className="flex flex-1 overflow-hidden">
 
-        {/* LIST */}
-        <div className="w-full md:w-[460px] bg-white border-r overflow-y-auto p-5 space-y-4">
-          <h2 className="text-xl font-bold">{filteredProperties.length} Properties</h2>
+        {/* ================= LISTINGS ================= */}
+        <div className="w-full md:w-[460px] bg-white border-r flex flex-col">
 
-          <AnimatePresence>
-            {filteredProperties.map((p) => (
-              <motion.div
-                key={p.id}
-                layout
-                onClick={() => navigate(`/property/${p.id}`)}
-                onMouseEnter={() => setHoveredProperty(p.id)}
-                onMouseLeave={() => setHoveredProperty(null)}
-                className="bg-white rounded-xl border shadow-sm cursor-pointer hover:ring-2 hover:ring-blue-500"
-              >
-                <div className="flex h-36">
-                 <img
-                    src={
-                      p.image ||
-                      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
-                    }
-                    alt={p.owner}
-                    className="w-40 h-full object-cover"
-                  />
-                  <div className="p-4 flex-1">
-                    <h3 className="font-bold">{p.owner}</h3>
-                    <p className="text-sm text-slate-600">{p.bhk} • {p.price}</p>
-                    <p className="text-xs text-slate-500 flex items-center gap-1">
-                      <MapPin size={12} />
-                      {p.locality}, {p.city}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          {/* Results Header */}
+          <div className="p-5 border-b sticky top-0 bg-white z-10">
+            <p className="text-xs uppercase tracking-wider text-slate-400">
+              Results Found
+            </p>
+            <h2 className="text-2xl font-bold">
+              {filteredProperties.length} Properties
+            </h2>
+
+            {/* Active Filters */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {location && (
+                <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                  {location}
+                </span>
+              )}
+              {type && (
+                <span className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                  {type}
+                </span>
+              )}
+              {query && (
+                <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
+                  {query}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Cards */}
+          <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50">
+            <AnimatePresence>
+              {filteredProperties.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-20"
+                >
+                  <Search size={40} className="mx-auto text-slate-400 mb-4" />
+                  <p className="font-medium">No properties found</p>
+                </motion.div>
+              ) : (
+                filteredProperties.map((p) => (
+                  <motion.div
+                    key={p.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    onMouseEnter={() => setHoveredProperty(p.id)}
+                    onMouseLeave={() => setHoveredProperty(null)}
+                    className={`bg-white rounded-2xl border overflow-hidden cursor-pointer transition ${
+                      hoveredProperty === p.id
+                        ? "ring-2 ring-blue-500 shadow-xl"
+                        : "shadow-sm"
+                    }`}
+                  >
+                    <div className="flex h-36">
+                      <img
+                        src={
+                          p.image ||
+                          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
+                        }
+                        alt=""
+                        className="w-40 h-full object-cover"
+                      />
+
+                      <div className="flex-1 p-4 flex flex-col justify-between">
+                        <div>
+                          <h3 className="font-bold">{p.propertyType}</h3>
+                          <p className="text-xs text-slate-500 flex items-center gap-1">
+                            <MapPin size={12} />
+                            {p.locality}, {p.city}
+                          </p>
+                        </div>
+
+                        <div className="flex justify-between items-center pt-2 border-t text-xs">
+                          <span className="flex items-center gap-1">
+                            <Building2 size={12} />
+                            {p.developer}
+                          </span>
+                          <span className="font-bold">₹ Price on Req</span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* MAP */}
         <div className="hidden md:block flex-1 relative">
-          <MapContainer center={INDIA_CENTER} zoom={INDIA_ZOOM} className="h-full w-full">
+          <MapContainer
+            center={INDIA_CENTER}
+            zoom={INDIA_ZOOM}
+            zoomControl={false}
+            className="h-full w-full"
+          >
             <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
-            <MapController properties={filteredProperties} location={location} />
+            <MapController
+              properties={filteredProperties}
+              location={location}
+            />
 
             {filteredProperties.map((p) => (
               <CircleMarker
                 key={p.id}
                 center={[p.lat, p.lng]}
                 radius={hoveredProperty === p.id ? 14 : 8}
-                pathOptions={{ color: "#2563eb", fillOpacity: 1 }}
+                pathOptions={{
+                  color:
+                    hoveredProperty === p.id ? "#3b82f6" : "#0f172a",
+                  fillColor:
+                    hoveredProperty === p.id ? "#3b82f6" : "#0f172a",
+                  fillOpacity: 1,
+                  weight: 3,
+                }}
               >
-                <Popup>
-                  <strong>{p.owner}</strong>
-                  <br />
-                  {p.price}
+                <Popup closeButton={false}>
+                  <p className="font-bold text-sm">{p.propertyType}</p>
+                  <p className="text-xs">{p.locality}</p>
                 </Popup>
               </CircleMarker>
             ))}
@@ -473,7 +506,7 @@ export default function PropertyListing() {
 
           <button
             onClick={() => setParams({})}
-            className="absolute top-6 right-6 bg-white p-3 rounded-full shadow-lg"
+            className="absolute top-6 right-6 bg-white p-3 rounded-full shadow-lg hover:bg-gray-100 transition"
           >
             <Navigation2 size={20} />
           </button>
