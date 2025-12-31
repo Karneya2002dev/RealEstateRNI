@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './Component/Home'
 import Header from './Component/Pages/Header'
 import SplashScreen from './Component/Pages/Splash'
-import Login from './Component/Pages/Login'
+import Login from './Component/Auth/Login'
 import Register from './Component/Pages/Register'
 import Locations from './Component/Pages/Locations'
 import LocationDetails from './Component/Pages/LocationDetails'
@@ -16,6 +16,7 @@ import BuilderRegister from './Component/BuilderRegister'
 import PropertyPage from './Component/Pages/PropertyPages'
 import PropertyListing from './Component/Pages/PropertyCategorySlider'
 import PropertyDetails from "./Component/Pages/PropertiesPage";
+import RegisterForm from './Component/Auth/RegisterForm'
 const App = () => {
   return (
    <>
@@ -32,6 +33,7 @@ const App = () => {
     <Route path="/project/:id" element={<ProjectDetailPage />} />
     <Route path="/property/:id" element={<PropertyDetails />} />  
     <Route path="/availability/:id" element={<AvailabilityPage />} />
+    <Route path="/Registerform" element={<RegisterForm />} />
 
    </Routes>
    

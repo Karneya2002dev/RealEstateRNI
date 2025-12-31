@@ -6,7 +6,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../../assets/logoo.png";
-
 /* Property Items */
 const propertyItems = [
   { label: "New Flats", icon: <Home size={16} />, path: "new-flats" },
