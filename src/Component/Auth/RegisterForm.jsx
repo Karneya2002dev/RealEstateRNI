@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logoo.png";
+import { EyeOff } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
