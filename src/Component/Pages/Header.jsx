@@ -3,7 +3,7 @@ import {
   Menu, X, LogIn, LogOut, ChevronDown,
   Home, Building2, Landmark, Warehouse, Rocket, Star
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../../assets/logoo.png";
 /* Property Items */
@@ -20,13 +20,13 @@ const propertyItems = [
 ];
 
 const navLinks = [
-  { name: "About Us", href: "#about" },
-  { name: "Services", href: "#services" },
-  { name: "Gallery", href: "#gallery" },
-  { name: "Forum", href: "#forum" },
-  { name: "YouTube", href: "#youtube" },
-  { name: "FAQ", href: "#faq" },
-  { name: "Contact Us", href: "#contact" },
+  { name: "About Us", href: "/about" },
+  { name: "Services", href: "/services" },
+  { name: "Gallery", href: "/gallery" },
+  { name: "Forum", href: "/forum" },
+  { name: "YouTube", href: "/youtube" },
+  { name: "FAQ", href: "/faq" },
+  { name: "Contact Us", href: "/contact" },
   { name: "Investors", href: "https://invest.rnirealestate.com/", external: true },
 ];
 
@@ -166,15 +166,15 @@ export default function Header() {
               {/* Nav Links */}
               <div className="flex items-center gap-1">
                 {navLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.name}
-                    href={link.href}
+                    to={link.href}
                     target={link.external ? "_blank" : "_self"}
                     className={`relative group px-4 py-2 rounded-full text-sm font-bold ${navTextColor} transition-colors hover:text-red-600`}
                   >
                     <LinkPill />
                     <span className="relative z-10">{link.name}</span>
-                  </a>
+                  </Link>
                 ))}
               </div>
 
