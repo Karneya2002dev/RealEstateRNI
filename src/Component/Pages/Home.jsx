@@ -25,15 +25,15 @@ export default function Home() {
 
   return (
     <>
-      <Hero data={siteData.hero} />
-      <About data={siteData.about} />
-      <Services services={siteData.services} />
+      <Hero  />
+      <About  />
+      <Services  />
       
       {/* Enquiry Form Section */}
       <EnquiryForm />
 
       {/* Footer */}
-      <Footer data={siteData.contact} />
+      <Footer  />
     </>
   );
 }

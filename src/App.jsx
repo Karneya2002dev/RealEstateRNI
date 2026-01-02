@@ -17,6 +17,13 @@ import PropertyPage from './Component/Pages/PropertyPages'
 import PropertyListing from './Component/Pages/PropertyCategorySlider'
 import PropertyDetails from "./Component/Pages/PropertiesPage";
 import RegisterForm from './Component/Auth/RegisterForm'
+import Contact from './Component/Pages/Contact'
+import About from './Component/Pages/About'
+import Forum from './Component/Pages/Forum'
+import Gallery from './Component/Pages/Gallery'
+import Services from './Component/Pages/Service'
+import Videos from './Component/Pages/Videos'
+import FAQ from './Component/Pages/FAQ'
 const App = () => {
   return (
    <>
@@ -34,8 +41,19 @@ const App = () => {
     <Route path="/property/:id" element={<PropertyDetails />} />  
     <Route path="/availability/:id" element={<AvailabilityPage />} />
     <Route path="/Registerform" element={<RegisterForm />} />
+<<<<<<< HEAD
      <Route path="/properties/:propertyType" element={<PropertyPage />} />
 
+=======
+    <Route path="/contact" element={<Contact />} />
+    <Route path="/about" element={<About />} />
+    <Route path="/forum" element={<Forum />} />
+    <Route path="/gallery" element={<Gallery />} />
+    <Route path="/services" element={<Services />} />
+    <Route path="/faq" element={<FAQ />} />
+    <Route path="/youtube" element={<Videos />} />
+    <Route path="/properties/:propertyType" element={<PropertyPage />} />
+>>>>>>> 38d59860dc06533dc99fa6f6c57d6b024257f05c
    </Routes>
    
    </>
@@ -44,17 +62,3 @@ const App = () => {
 
 export default App
 
-
-// import React from 'react'
-// import Homee from './Component/Redbriq/Homee'
-
-// const App = () => {
-//   return (
-//    <>
-//    <Homee />
-   
-//    </>
-//   )
-// }
-
-// export default App
