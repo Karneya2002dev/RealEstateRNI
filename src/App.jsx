@@ -34,6 +34,7 @@ const App = () => {
     <Route path="/property/:id" element={<PropertyDetails />} />  
     <Route path="/availability/:id" element={<AvailabilityPage />} />
     <Route path="/Registerform" element={<RegisterForm />} />
+     <Route path="/properties/:propertyType" element={<PropertyPage />} />
 
    </Routes>
    
