@@ -12,6 +12,7 @@ import AgentListings from './Pages/AgentListings'
 import OurLocations from './Pages/Locations'
 import RedbriqBlenderseoExplain from './RedbriqBlenderseoExplain'
 import PropertyListing from './Pages/PropertyCategorySlider'
+import OurMembers from './Pages/OurMembers'
 // import PropertySearchBanner from './Pages/PropertySearchBanner'
 
 const Home = () => {
@@ -25,6 +26,7 @@ const Home = () => {
        {/* <PropertySearchBanner /> */}
     <About />
     <Services />
+    <OurMembers />
     <RedbriqBlenderseoExplain />
     {/* <Platforms /> */}
     <Gallery />
