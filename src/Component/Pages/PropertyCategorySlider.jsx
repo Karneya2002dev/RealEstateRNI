@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 // import React, { useMemo, useEffect, useState } from "react";
 // import {
 //   MapContainer,
@@ -252,7 +251,7 @@
 //   );
 // }
 
->>>>>>> 38d59860dc06533dc99fa6f6c57d6b024257f05c
+
 import React, { useEffect, useMemo, useState } from "react";
 import {
   MapContainer,

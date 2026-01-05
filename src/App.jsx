@@ -24,6 +24,7 @@ import Gallery from './Component/Pages/Gallery'
 import Services from './Component/Pages/Service'
 import Videos from './Component/Pages/Videos'
 import FAQ from './Component/Pages/FAQ'
+import Members from './Component/Pages/Members'
 const App = () => {
   return (
    <>
@@ -41,10 +42,6 @@ const App = () => {
     <Route path="/property/:id" element={<PropertyDetails />} />  
     <Route path="/availability/:id" element={<AvailabilityPage />} />
     <Route path="/Registerform" element={<RegisterForm />} />
-<<<<<<< HEAD
-     <Route path="/properties/:propertyType" element={<PropertyPage />} />
-
-=======
     <Route path="/contact" element={<Contact />} />
     <Route path="/about" element={<About />} />
     <Route path="/forum" element={<Forum />} />
@@ -53,9 +50,9 @@ const App = () => {
     <Route path="/faq" element={<FAQ />} />
     <Route path="/youtube" element={<Videos />} />
     <Route path="/properties/:propertyType" element={<PropertyPage />} />
->>>>>>> 38d59860dc06533dc99fa6f6c57d6b024257f05c
+    <Route path="/Members" element={<Members />} />
+
    </Routes>
-   
    </>
   )
 }
