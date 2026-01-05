@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react'
 import Patronmembers from "./Members/Patronmembers";
 import LifetimeMembers from "./Members/LifetimeMembers";
 
-const Members = () => {
+const OurMembers = () => {
   return (
     <section className="relative pt-28 pb-20 bg-slate-50">
       {/* Page Title */}
@@ -30,8 +30,7 @@ const Members = () => {
       <div>
         <LifetimeMembers />
       </div>
-    </section>
-  );
-};
+    </section>)
+}
 
-export default Members;
+export default OurMembers

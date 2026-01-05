@@ -24,7 +24,7 @@ import Gallery from './Component/Pages/Gallery'
 import Services from './Component/Pages/Service'
 import Videos from './Component/Pages/Videos'
 import FAQ from './Component/Pages/FAQ'
-import Members from './Component/Pages/Members'
+import Members from './Component/Pages/OurMembers'
 const App = () => {
   return (
    <>

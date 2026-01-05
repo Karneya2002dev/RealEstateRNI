@@ -5,8 +5,7 @@ import Services from "../Components/Service";  // Fixed: Correct name & path
 import EnquiryForm from "../Components/Contact"; // Fixed: Correct name & path
 import Footer from "../Components/Footer";
 import { defaultData } from "../data/Data"; // Fixed: Correct path & name
-import Members from "./Members";
-
+import Members from "./OurMembers";
 const STORAGE_KEY = "microsite_data";
 
 export default function Home() {
