@@ -25,6 +25,9 @@ import Services from './Component/Pages/Service'
 import Videos from './Component/Pages/Videos'
 import FAQ from './Component/Pages/FAQ'
 import Members from './Component/Pages/OurMembers'
+// import OwnersPage from './Component/Pages/Members/OwnersPage' 
+import Patronmembers from './Component/Pages/Members/Patronmembers'
+import LifetimeMembers from './Component/Pages/Members/LifetimeMembers'
 const App = () => {
   return (
    <>
@@ -51,6 +54,11 @@ const App = () => {
     <Route path="/youtube" element={<Videos />} />
     <Route path="/properties/:propertyType" element={<PropertyPage />} />
     <Route path="/Members" element={<Members />} />
+    <Route path='/patron' element={<Patronmembers />} />
+{/* <Route path="/Promoters" element={<OwnersPage />} /> */}
+    <Route path='/lifetime' element={<LifetimeMembers />} />
+
+
 
    </Routes>
    </>

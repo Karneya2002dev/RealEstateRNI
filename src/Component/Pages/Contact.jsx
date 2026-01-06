@@ -49,7 +49,7 @@ const InnovativeForm = () => {
       <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Sidebar */}
         <div className="lg:col-span-4">
-          <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-6 md:p-8 rounded-3xl h-full flex flex-col justify-between">
+          <div className="bg-white/5 border border-white/10 backdrop-blur-xl p-6 md:p-4 rounded-3xl h-full flex flex-col ">
             <div>
               <div className="w-12 h-12 bg-cyan-400 rounded-2xl flex items-center justify-center mb-8 shadow-[0_0_20px_rgba(6,182,212,0.5)]">
                 <FiHome className="text-2xl text-black" />
