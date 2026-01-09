@@ -58,7 +58,7 @@ const About = () => {
   return (
     <section
       ref={containerRef}
-      className="py-16 md:py-24 bg-[#f4f1eb] overflow-hidden " id="about"
+      className="py-16 md:py-24  overflow-hidden " id="about"
     >
       <div className="container mx-auto px-4 md:px-6">
         {/* HEADER */}

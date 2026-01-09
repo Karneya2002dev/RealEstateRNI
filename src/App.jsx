@@ -25,9 +25,12 @@ import Services from './Component/Pages/Service'
 import Videos from './Component/Pages/Videos'
 import FAQ from './Component/Pages/FAQ'
 import Members from './Component/Pages/OurMembers'
-// import OwnersPage from './Component/Pages/Members/OwnersPage' 
+import OwnersPage from './Component/Pages/Members/OfficeMembers' 
 import Patronmembers from './Component/Pages/Members/Patronmembers'
 import LifetimeMembers from './Component/Pages/Members/LifetimeMembers'
+import Builders from './Component/Pages/Members/Builders'
+import ArchitechEngineer from './Component/Pages/Members/ArchitechEngineer'
+import Pandychary from './Component/Pages/Members/PandicharyMembers'
 const App = () => {
   return (
    <>
@@ -55,8 +58,12 @@ const App = () => {
     <Route path="/properties/:propertyType" element={<PropertyPage />} />
     <Route path="/Members" element={<Members />} />
     <Route path='/patron' element={<Patronmembers />} />
-{/* <Route path="/Promoters" element={<OwnersPage />} /> */}
+    <Route path="/Promoters" element={<OwnersPage />} />
     <Route path='/lifetime' element={<LifetimeMembers />} />
+    <Route path='/builder' element={<Builders />} />
+    <Route path='/architec' element={<ArchitechEngineer />} />
+    <Route path='/pandychary' element={<Pandychary />} />
+    
 
 
 

@@ -147,7 +147,7 @@ const FeatureCard = ({ item }) => {
 
 const Features = () => {
   return (
-    <section className="bg-[#FAF9F6] py-24 md:py-40 relative overflow-hidden">
+    <section className=" py-24 md:py-40 relative overflow-hidden">
       {/* Decorative Background Element */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -mr-64 -mt-64" />
 

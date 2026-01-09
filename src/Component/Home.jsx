@@ -26,7 +26,7 @@ const Home = () => {
        {/* <PropertySearchBanner /> */}
     <About />
     <Services />
-    <OurMembers />
+    
     <RedbriqBlenderseoExplain />
     {/* <Platforms /> */}
     <Gallery />

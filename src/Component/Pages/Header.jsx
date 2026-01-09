@@ -458,6 +458,30 @@ export default function Header() {
                       >
                         Lifetime Members
                       </button>
+                      <button
+                        onClick={() => navigate("/Promoters")}
+                        className="w-full text-left px-4 py-3 hover:bg-red-50"
+                      >
+                        Promoters
+                      </button>
+                      <button
+                        onClick={() => navigate("/architec")}
+                        className="w-full text-left px-4 py-3 hover:bg-red-50"
+                      >
+                        Architect
+                      </button>
+                      <button
+                        onClick={() => navigate("/builder")}
+                        className="w-full text-left px-4 py-3 hover:bg-red-50"
+                      >
+                        Builder
+                      </button>
+                      <button
+                        onClick={() => navigate("/pandychary")}
+                        className="w-full text-left px-4 py-3 hover:bg-red-50"
+                      >
+                        PandycharyMembers
+                      </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -469,7 +493,7 @@ export default function Header() {
                   key={link.name}
                   to={link.href}
                   target={link.external ? "_blank" : "_self"}
-                  className="relative group px-4 py-2 font-bold"
+                  className="relative group px-2 py-2 font-bold"
                 >
                   <LinkPill />
                   <span className="relative z-10">{link.name}</span>

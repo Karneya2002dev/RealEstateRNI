@@ -71,7 +71,7 @@ const Services = () => {
     <section
       id="services"
       ref={sectionRef}
-      className="relative py-28 bg-[#faf7f2] overflow-hidden"
+      className="relative py-28  overflow-hidden"
     >
       {/* Subtle gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
